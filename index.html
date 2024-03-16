@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Grocery List</title>
+<style>
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    max-width: 600px;
+    margin: 20px auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+h1 {
+    text-align: center;
+}
+
+input[type="text"] {
+    width: calc(100% - 80px);
+    padding: 10px;
+    margin-bottom: 10px;
+    box-sizing: border-box;
+}
+
+button {
+    padding: 10px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-left: 10px;
+}
+
+button:hover {
+    background-color: #45a049;
+}
+
+ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+li {
+    margin-bottom: 10px;
+}
+
+.delete-btn {
+    background-color: #f44336;
+}
+
+.delete-btn:hover {
+    background-color: #da190b;
+}
+
+.mark-btn {
+    background-color: #008CBA;
+}
+
+.mark-btn:hover {
+    background-color: #005a7e;
+}
+
+.update-btn {
+    background-color: #f4c20d;
+}
+
+.update-btn:hover {
+    background-color: #b38d06;
+}
+</style>
+</head>
+<body>
+<div class="container">
+    <h1>Grocery List</h1>
+    <input type="text" id="item" placeholder="Enter item">
+    <button onclick="addItem()">Add Item</button>
+    <ul id="list"></ul>
+</div>
+<script>
+var groceryList = [];
+
+function renderList() {
+    var listElement = document.getElementById("list");
+    listElement.innerHTML = "";
+    for (var i = 0; i < groceryList.length; i++) {
+        var li = document.createElement("li");
+        li.textContent = groceryList[i].name;
+        var deleteBtn = document.createElement("button");
+        deleteBtn.textContent = "Delete";
+        deleteBtn.className = "delete-btn";
+        deleteBtn.setAttribute("data-index", i);
+        deleteBtn.addEventListener("click", deleteItem);
+        var markBtn = document.createElement("button");
+        markBtn.textContent = groceryList[i].taken ? "Undo" : "Mark as Taken";
+        markBtn.className = "mark-btn";
+        markBtn.setAttribute("data-index", i);
+        markBtn.addEventListener("click", toggleTaken);
+        var updateBtn = document.createElement("button");
+        updateBtn.textContent = "Update";
+        updateBtn.className = "update-btn";
+        updateBtn.setAttribute("data-index", i);
+        updateBtn.addEventListener("click", updateItem);
+        li.appendChild(deleteBtn);
+        li.appendChild(markBtn);
+        li.appendChild(updateBtn);
+        listElement.appendChild(li);
+    }
+}
+
+function addItem() {
+    var itemInput = document.getElementById("item");
+    var itemName = itemInput.value.trim();
+    if (itemName !== "") {
+        groceryList.push({ name: itemName, taken: false });
+        renderList();
+        itemInput.value = "";
+    } else {
+        alert("Please enter a valid item.");
+    }
+}
+
+function deleteItem() {
+    var index = parseInt(this.getAttribute("data-index"));
+    groceryList.splice(index, 1);
+    renderList();
+}
+
+function toggleTaken() {
+    var index = parseInt(this.getAttribute("data-index"));
+    groceryList[index].taken = !groceryList[index].taken;
+    renderList();
+}
+
+function updateItem() {
+    var index = parseInt(this.getAttribute("data-index"));
+    var newName = prompt("Enter new name for the item:");
+    if (newName !== null && newName.trim() !== "") {
+        groceryList[index].name = newName.trim();
+        renderList();
+    } else {
+        alert("Please enter a valid name.");
+    }
+}
+
+renderList();
+</script>
+</body>
+</html>
